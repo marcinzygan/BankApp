@@ -7,5 +7,5 @@ The website is build in HTML / CSS and JavaScript /
 
 - 📫 Find me on marcin-zygan.com
 <p align= "center">
-  <img src= "https://github.com/marcinzygan/BankApp/blob/master/Bankist-flowchart.png" width="500" height="600">
+  <img src= "https://github.com/marcinzygan/BankApp/blob/master/Bankist-flowchart.png" width="700" height="600">
 </p>
