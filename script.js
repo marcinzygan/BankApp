@@ -28,7 +28,7 @@ const account3 = {
 
 const account4 = {
   owner: 'Sarah Smith',
-  movements: [430, 1000, 700, 50, 90],
+  movements: [430, 1000, 700, 50, 90, -400, 890],
   interestRate: 1,
   pin: 4444,
 };
@@ -78,36 +78,32 @@ const displayMovements = function (movments) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-displayMovements(account1.movements);
+
 // CALCULATE AND DISPLAY BALANCE
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance} €`;
+const calcDisplayBalance = function (account) {
+  account.balance = account.movements.reduce((acc, mov) => acc + mov, 0);
+
+  labelBalance.textContent = `${account.balance} €`;
 };
-calcDisplayBalance(account1.movements);
 
 // DISPLAY SUMMARY
-const calcDisplaySummary = function (movement) {
-  console.log(movement);
-  const incomes = movement
+const calcDisplaySummary = function (account) {
+  const incomes = account.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov);
   labelSumIn.textContent = `${incomes}€`;
-  const withdrawal = movement
+  const withdrawal = account.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov);
   labelSumOut.textContent = `${Math.abs(withdrawal)}€`;
   // interest is 1.2% of deposited amount and intrest is  more then 1Euro
-  const interest = movement
-    .map(mov => (mov * 1.2) / 100)
+  const interest = account.movements
+    .map(mov => (mov * account.interestRate) / 100)
     .filter(mov => mov > 0)
     .filter(intrest => intrest >= 1)
     .reduce((acc, mov) => acc + mov);
-  labelSumInterest.textContent = `${interest}€`;
-  console.log(interest);
+  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
 };
-
-calcDisplaySummary(account1.movements);
 
 // CREATE USER LOGIN BASED ON FIRST LETTERS OF FULL NAME
 const createUsernames = function (accounts) {
@@ -117,11 +113,75 @@ const createUsernames = function (accounts) {
       .split(' ')
       .map(name => name[0])
       .join('');
-    console.log(acc.username);
   });
+};
+// UPDATE UI
+
+const updateUi = function (currentAccount) {
+  // Display Movements
+  displayMovements(currentAccount.movements);
+  //Display Balance
+  calcDisplayBalance(currentAccount);
+  //Display Summary
+  calcDisplaySummary(currentAccount);
 };
 
 createUsernames(accounts); // STW
+
+// EVENT HANDLER FOR LOG IN
+let currentAccount;
+
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault(); //Prevent form from submittnig and reloading page
+
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    //  Clear input fields
+    inputLoginUsername.value = '';
+    inputLoginPin.value = '';
+    //Clear focus on pin input
+    inputLoginPin.blur();
+    // Display UI and Welcome Message
+    labelWelcome.textContent = `Welcome back , ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 1;
+    // Update UI
+    updateUi(currentAccount);
+  }
+});
+
+// TRANSFER MONEY BETWEEN USERS
+
+btnTransfer.addEventListener('click', function (e) {
+  //Prevent form from submittnig and reloading page
+  e.preventDefault();
+  // Amount to transfer
+  const amount = Number(inputTransferAmount.value);
+  // Transfer to
+  const reciverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  // Check if the amount is a positive value ,check if reciverAcc acc exist, and if current user have enough money to make transfer ,also we don't want to transfer money to currentAccount  .
+  // Clear Input fields
+  inputTransferAmount.value = '';
+  inputTransferTo.value = '';
+  if (
+    amount > 0 &&
+    reciverAcc &&
+    currentAccount.balance >= amount &&
+    reciverAcc.username !== currentAccount.username
+  ) {
+    // Add negative movement to currentAccount
+    currentAccount.movements.push(-amount);
+    //Update UI
+    updateUi(currentAccount);
+    // Add positive movement to the reciverAcc
+    reciverAcc.movements.push(amount);
+  }
+});
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -338,3 +398,18 @@ GOOD LUCK 😀
 // const avg1 = calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
 // const avg2 = calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
 // console.log(avg1, avg2);
+
+// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// const withdrawal = movements.find(mov => mov < 0);
+// console.log(withdrawal);
+// console.log(accounts);
+
+// // const account = accounts.find(acc => acc.owner === 'Jessica Davis');
+// // console.log(account);
+
+// // for of loop method
+// for (const account of accounts) {
+//   if (account.owner === 'Jessica Davis') {
+//     console.log(account);
+//   }
+// }
