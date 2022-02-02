@@ -182,6 +182,25 @@ btnTransfer.addEventListener('click', function (e) {
     reciverAcc.movements.push(amount);
   }
 });
+// REQUEST LOAN
+btnLoan.addEventListener('click', function (e) {
+  //Prevent form from submittnig and reloading page
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+  //clear input field
+  inputLoanAmount.value = '';
+  // Conditions of Loan : Loan is granted if any deposit is > then 10% of request
+  if (
+    amount > 0 &&
+    currentAccount.movements.some(mov => mov >= (amount * 10) / 100)
+  ) {
+    //Add Positive movement
+    currentAccount.movements.push(amount);
+    //Update UI
+    updateUi(currentAccount);
+  }
+});
 
 // CLOSE ACCOUNT
 btnClose.addEventListener('click', function (e) {
@@ -205,6 +224,8 @@ btnClose.addEventListener('click', function (e) {
     accounts.splice(index, 1);
     // Hide UI
     containerApp.style.opacity = 0;
+    //Change Welcome Message
+    labelWelcome.textContent = 'Log in to get Started';
   }
 });
 
@@ -438,3 +459,16 @@ GOOD LUCK 😀
 //     console.log(account);
 //   }
 // }
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+// equality
+console.log(movements.includes(-130));
+
+// SOME METHOD
+//condition
+const anyDeposits = movements.some(mov => mov > 5000);
+console.log(anyDeposits);
+
+// EVERY METHOD
+
+console.log(movements.every(mov => mov > 0));
