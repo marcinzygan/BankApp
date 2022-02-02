@@ -183,6 +183,31 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
+// CLOSE ACCOUNT
+btnClose.addEventListener('click', function (e) {
+  //Prevent form from submittnig and reloading page
+  e.preventDefault();
+
+  const confirmUser = inputCloseUsername.value;
+  const confirmPin = Number(inputClosePin.value);
+  // Clear input Value
+  inputCloseUsername.value = '';
+  inputClosePin.value = '';
+
+  if (
+    currentAccount.username === confirmUser &&
+    confirmPin === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      account => account.username === currentAccount.username
+    );
+    //Delete Current Account
+    accounts.splice(index, 1);
+    // Hide UI
+    containerApp.style.opacity = 0;
+  }
+});
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
