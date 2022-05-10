@@ -12,4 +12,4 @@ There is two users that can make transfers between each other
 ##
 User 1 : Login : mz , password : 1111
 ##
-User 2 : Login : js , password : 2222
+User 2 : Login : jd , password : 2222
